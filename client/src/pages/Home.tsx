@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Clock, Search, ExternalLink, Play, ChevronDown, ChevronUp, Utensils, Coffee, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MapPin, Clock, Search, ExternalLink, Play, ChevronDown, ChevronUp, Utensils, Coffee, Sparkles, Map } from "lucide-react";
+import { RestaurantMap } from "@/components/RestaurantMap";
 
 const categoryIcons: Record<string, typeof Sparkles> = {
   "fine-dining": Sparkles,
@@ -18,6 +20,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(12);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [activeTab, setActiveTab] = useState<"list" | "map">("list");
 
   const filteredRestaurants = useMemo(() => {
     return restaurants.filter((r) => {
@@ -202,54 +206,77 @@ export default function Home() {
             </div>
           </aside>
 
-          {/* Restaurant Grid */}
+          {/* Main Content Area */}
           <div className="flex-1 min-w-0">
-            {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-[#5D4E37]">
-                共 <span className="font-bold text-[#1B4332]">{filteredRestaurants.length}</span> 間店家
-                {activeCategory !== "all" && (
-                  <span className="ml-1">
-                    · {categories.find((c) => c.id === activeCategory)?.label}
-                  </span>
+            {/* Tabs */}
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "list" | "map")} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-white border-2 border-[#E8D5B0]">
+                <TabsTrigger value="list" className="data-[state=active]:bg-[#C0392B] data-[state=active]:text-white">
+                  📋 列表檢視
+                </TabsTrigger>
+                <TabsTrigger value="map" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white">
+                  🗺️ 地圖檢視
+                </TabsTrigger>
+              </TabsList>
+
+              {/* List View */}
+              <TabsContent value="list" className="space-y-6">
+                {/* Results Header */}
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-[#5D4E37]">
+                    共 <span className="font-bold text-[#1B4332]">{filteredRestaurants.length}</span> 間店家
+                    {activeCategory !== "all" && (
+                      <span className="ml-1">
+                        · {categories.find((c) => c.id === activeCategory)?.label}
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {visibleRestaurants.map((restaurant, index) => (
+                    <RestaurantCard
+                      key={restaurant.id}
+                      restaurant={restaurant}
+                      isExpanded={expandedId === restaurant.id}
+                      onClick={() => handleCardClick(restaurant.id)}
+                      index={index}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More */}
+                {visibleCount < filteredRestaurants.length && (
+                  <div className="flex justify-center mt-8">
+                    <Button
+                      onClick={() => setVisibleCount((c) => c + 12)}
+                      variant="outline"
+                      className="border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
+                    >
+                      載入更多 ({filteredRestaurants.length - visibleCount} 間)
+                    </Button>
+                  </div>
                 )}
-              </p>
-            </div>
 
-            {/* Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {visibleRestaurants.map((restaurant, index) => (
-                <RestaurantCard
-                  key={restaurant.id}
-                  restaurant={restaurant}
-                  isExpanded={expandedId === restaurant.id}
-                  onClick={() => handleCardClick(restaurant.id)}
-                  index={index}
+                {/* Empty State */}
+                {filteredRestaurants.length === 0 && (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
+                    <p className="text-sm text-[#8B7355] mt-2">請嘗試其他搜尋關鍵字或分類</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Map View */}
+              <TabsContent value="map" className="h-[600px]">
+                <RestaurantMap 
+                  selectedCategory={activeCategory}
+                  onRestaurantSelect={setSelectedRestaurant}
                 />
-              ))}
-            </div>
-
-            {/* Load More */}
-            {visibleCount < filteredRestaurants.length && (
-              <div className="flex justify-center mt-8">
-                <Button
-                  onClick={() => setVisibleCount((c) => c + 12)}
-                  variant="outline"
-                  className="border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
-                >
-                  載入更多 ({filteredRestaurants.length - visibleCount} 間)
-                </Button>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {filteredRestaurants.length === 0 && (
-              <div className="text-center py-20">
-                <div className="text-6xl mb-4">🔍</div>
-                <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
-                <p className="text-sm text-[#8B7355] mt-2">請嘗試其他搜尋關鍵字或分類</p>
-              </div>
-            )}
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
@@ -265,6 +292,20 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Animation styles */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -295,6 +336,18 @@ function RestaurantCard({
       }}
       onClick={onClick}
     >
+      {/* Restaurant Photo */}
+      {restaurant.photoUrl && (
+        <div className="relative w-full h-40 overflow-hidden bg-gray-200">
+          <img
+            src={restaurant.photoUrl}
+            alt={restaurant.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
