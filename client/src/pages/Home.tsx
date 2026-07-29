@@ -53,26 +53,27 @@ export default function Home() {
   const handleShare = (restaurant: Restaurant, e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const shareText = `🍽️ ${restaurant.name}\n${restaurant.food}\n📍 ${restaurant.address}\n\n河內美食地圖 - YouTube 影片導覽`;
+    const shareUrl = restaurant.mapsUrl;
+    const shareText = `${restaurant.name} - ${restaurant.food}`;
     
     if (navigator.share) {
       navigator.share({
         title: `河內美食地圖 - ${restaurant.name}`,
         text: shareText,
-        url: window.location.href,
+        url: shareUrl,
       }).catch(() => {
         // 如果分享失敗，複製到剪貼板
-        copyToClipboard(shareText);
+        copyToClipboard(shareUrl);
       });
     } else {
       // 不支援 Web Share API，複製到剪貼板
-      copyToClipboard(shareText);
+      copyToClipboard(shareUrl);
     }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      toast.success("已複製到剪貼板！");
+      toast.success("已複製 Google Maps 連結！");
     }).catch(() => {
       toast.error("複製失敗");
     });
