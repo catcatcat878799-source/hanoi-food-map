@@ -4,9 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Clock, Search, ExternalLink, Play, ChevronDown, ChevronUp, Utensils, Coffee, Sparkles, Map } from "lucide-react";
-import { RestaurantMap } from "@/components/RestaurantMap";
+import { MapPin, Clock, Search, ExternalLink, Play, ChevronDown, ChevronUp, Utensils, Coffee, Sparkles, Share2 } from "lucide-react";
+import { toast } from "sonner";
 
 const categoryIcons: Record<string, typeof Sparkles> = {
   "fine-dining": Sparkles,
@@ -20,8 +19,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(12);
-  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
-  const [activeTab, setActiveTab] = useState<"list" | "map">("list");
 
   const filteredRestaurants = useMemo(() => {
     return restaurants.filter((r) => {
@@ -52,6 +49,34 @@ export default function Home() {
   const handleCardClick = useCallback((id: number) => {
     setExpandedId(expandedId === id ? null : id);
   }, [expandedId]);
+
+  const handleShare = (restaurant: Restaurant, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const shareText = `🍽️ ${restaurant.name}\n${restaurant.food}\n📍 ${restaurant.address}\n\n河內美食地圖 - YouTube 影片導覽`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: `河內美食地圖 - ${restaurant.name}`,
+        text: shareText,
+        url: window.location.href,
+      }).catch(() => {
+        // 如果分享失敗，複製到剪貼板
+        copyToClipboard(shareText);
+      });
+    } else {
+      // 不支援 Web Share API，複製到剪貼板
+      copyToClipboard(shareText);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success("已複製到剪貼板！");
+    }).catch(() => {
+      toast.error("複製失敗");
+    });
+  };
 
   const formatTimestamp = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -208,75 +233,53 @@ export default function Home() {
 
           {/* Main Content Area */}
           <div className="flex-1 min-w-0">
-            {/* Tabs */}
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "list" | "map")} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6 bg-white border-2 border-[#E8D5B0]">
-                <TabsTrigger value="list" className="data-[state=active]:bg-[#C0392B] data-[state=active]:text-white">
-                  📋 列表檢視
-                </TabsTrigger>
-                <TabsTrigger value="map" className="data-[state=active]:bg-[#1B4332] data-[state=active]:text-white">
-                  🗺️ 地圖檢視
-                </TabsTrigger>
-              </TabsList>
-
-              {/* List View */}
-              <TabsContent value="list" className="space-y-6">
-                {/* Results Header */}
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-[#5D4E37]">
-                    共 <span className="font-bold text-[#1B4332]">{filteredRestaurants.length}</span> 間店家
-                    {activeCategory !== "all" && (
-                      <span className="ml-1">
-                        · {categories.find((c) => c.id === activeCategory)?.label}
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                {/* Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {visibleRestaurants.map((restaurant, index) => (
-                    <RestaurantCard
-                      key={restaurant.id}
-                      restaurant={restaurant}
-                      isExpanded={expandedId === restaurant.id}
-                      onClick={() => handleCardClick(restaurant.id)}
-                      index={index}
-                    />
-                  ))}
-                </div>
-
-                {/* Load More */}
-                {visibleCount < filteredRestaurants.length && (
-                  <div className="flex justify-center mt-8">
-                    <Button
-                      onClick={() => setVisibleCount((c) => c + 12)}
-                      variant="outline"
-                      className="border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
-                    >
-                      載入更多 ({filteredRestaurants.length - visibleCount} 間)
-                    </Button>
-                  </div>
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm text-[#5D4E37]">
+                共 <span className="font-bold text-[#1B4332]">{filteredRestaurants.length}</span> 間店家
+                {activeCategory !== "all" && (
+                  <span className="ml-1">
+                    · {categories.find((c) => c.id === activeCategory)?.label}
+                  </span>
                 )}
+              </p>
+            </div>
 
-                {/* Empty State */}
-                {filteredRestaurants.length === 0 && (
-                  <div className="text-center py-20">
-                    <div className="text-6xl mb-4">🔍</div>
-                    <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
-                    <p className="text-sm text-[#8B7355] mt-2">請嘗試其他搜尋關鍵字或分類</p>
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Map View */}
-              <TabsContent value="map" className="h-[600px]">
-                <RestaurantMap 
-                  selectedCategory={activeCategory}
-                  onRestaurantSelect={setSelectedRestaurant}
+            {/* Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {visibleRestaurants.map((restaurant, index) => (
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                  isExpanded={expandedId === restaurant.id}
+                  onClick={() => handleCardClick(restaurant.id)}
+                  onShare={(e) => handleShare(restaurant, e)}
+                  index={index}
                 />
-              </TabsContent>
-            </Tabs>
+              ))}
+            </div>
+
+            {/* Load More */}
+            {visibleCount < filteredRestaurants.length && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  onClick={() => setVisibleCount((c) => c + 12)}
+                  variant="outline"
+                  className="border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
+                >
+                  載入更多 ({filteredRestaurants.length - visibleCount} 間)
+                </Button>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {filteredRestaurants.length === 0 && (
+              <div className="text-center py-20">
+                <div className="text-6xl mb-4">🔍</div>
+                <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
+                <p className="text-sm text-[#8B7355] mt-2">請嘗試其他搜尋關鍵字或分類</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -314,14 +317,16 @@ function RestaurantCard({
   restaurant,
   isExpanded,
   onClick,
+  onShare,
   index,
 }: {
   restaurant: Restaurant;
   isExpanded: boolean;
   onClick: () => void;
+  onShare: (e: React.MouseEvent) => void;
   index: number;
 }) {
-  const Icon = categoryIcons[restaurant.category] || Utensils;
+  const Icon = categoryIcons[restaurant.category] || Sparkles;
   const embedUrl = `https://www.youtube.com/embed/${videoId}?start=${restaurant.timestampSeconds}&end=${restaurant.timestampSeconds + 45}&autoplay=1`;
 
   return (
@@ -372,10 +377,19 @@ function RestaurantCard({
                 </Badge>
               )}
             </div>
-            <CardTitle className="text-lg font-bold text-[#1B4332] leading-snug" style={{ fontFamily: "'Noto Serif TC', serif" }}>
-              {restaurant.name}
-            </CardTitle>
-            <p className="text-xs text-[#8B7355] mt-0.5 italic">{restaurant.nameVi}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <CardTitle className="text-lg font-bold text-[#1B4332] leading-snug" style={{ fontFamily: "'Noto Serif TC', serif" }}>
+                {restaurant.name}
+              </CardTitle>
+              <button
+                onClick={onShare}
+                className="flex-shrink-0 p-1.5 text-[#8B7355] hover:text-[#C0392B] hover:bg-[#F5E6CC] rounded-md transition-all duration-200"
+                title="分享店家"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-[#8B7355] italic">{restaurant.nameVi}</p>
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
             <div className="flex items-center gap-1 text-xs text-[#C0392B] font-mono font-bold bg-[#FDF2F0] px-2 py-1 rounded-md">
