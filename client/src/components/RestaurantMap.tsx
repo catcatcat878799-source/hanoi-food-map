@@ -9,110 +9,150 @@ interface RestaurantMapProps {
 
 export function RestaurantMap({ selectedCategory = "all", onRestaurantSelect }: RestaurantMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const mapInstanceRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<Restaurant | null>(null);
-  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+  const infoWindowRef = useRef<any>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const filteredRestaurants = selectedCategory === "all" 
     ? restaurants 
     : restaurants.filter(r => r.category === selectedCategory);
 
+  // 檢查 Google Maps API 是否已載入
   useEffect(() => {
-    if (!mapRef.current) return;
+    const checkGoogleMaps = () => {
+      if (typeof window !== 'undefined' && window.google && window.google.maps) {
+        setMapLoaded(true);
+      }
+    };
 
-    // 初始化地圖
-    const map = new google.maps.Map(mapRef.current, {
-      zoom: 13,
-      center: { lat: 21.0285, lng: 105.8554 }, // 河內中心
-      styles: [
-        {
-          featureType: "all",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#5D4E37" }],
-        },
-        {
-          featureType: "water",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#E8F4F8" }],
-        },
-      ],
-    });
+    // 立即檢查
+    checkGoogleMaps();
 
-    mapInstanceRef.current = map;
+    // 如果未載入，等待一段時間後重新檢查
+    if (!mapLoaded) {
+      const timer = setTimeout(checkGoogleMaps, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [mapLoaded]);
 
-    // 清除舊標記
-    markersRef.current.forEach(marker => marker.setMap(null));
-    markersRef.current = [];
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded) return;
 
-    // 建立新標記
-    const bounds = new google.maps.LatLngBounds();
-
-    filteredRestaurants.forEach((restaurant) => {
-      const marker = new google.maps.Marker({
-        position: { lat: restaurant.latitude, lng: restaurant.longitude },
-        map: map,
-        title: restaurant.name,
-        icon: getCategoryIcon(restaurant.category),
+    try {
+      // 初始化地圖
+      const map = new window.google.maps.Map(mapRef.current, {
+        zoom: 13,
+        center: { lat: 21.0285, lng: 105.8554 }, // 河內中心
+        styles: [
+          {
+            featureType: "all",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#5D4E37" }],
+          },
+          {
+            featureType: "water",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#E8F4F8" }],
+          },
+        ],
       });
 
-      bounds.extend(marker.getPosition()!);
+      mapInstanceRef.current = map;
 
-      marker.addListener("click", () => {
-        setSelectedMarker(restaurant);
-        onRestaurantSelect?.(restaurant);
+      // 清除舊標記
+      markersRef.current.forEach(marker => marker.setMap(null));
+      markersRef.current = [];
 
-        // 關閉舊的 InfoWindow
-        if (infoWindowRef.current) {
-          infoWindowRef.current.close();
-        }
+      // 建立新標記
+      const bounds = new window.google.maps.LatLngBounds();
 
-        // 建立新的 InfoWindow
-        const infoWindow = new google.maps.InfoWindow({
-          content: `
-            <div style="font-family: 'Noto Sans TC', sans-serif; padding: 8px; max-width: 200px;">
-              <div style="font-weight: bold; color: #1B4332; margin-bottom: 4px; font-size: 14px;">
-                ${restaurant.name}
-              </div>
-              <div style="font-size: 12px; color: #5D4E37; margin-bottom: 4px;">
-                ${restaurant.food}
-              </div>
-              <div style="font-size: 11px; color: #8B7355; margin-bottom: 8px;">
-                ${restaurant.address}
-              </div>
-              ${restaurant.michelin ? `
-                <div style="font-size: 11px; color: #C0392B; font-weight: bold; margin-bottom: 4px;">
-                  ⭐ ${restaurant.michelin}
-                </div>
-              ` : ''}
-              <a href="${restaurant.mapsUrl}" target="_blank" rel="noopener noreferrer" 
-                 style="color: #1B4332; text-decoration: none; font-size: 11px; font-weight: bold;">
-                在 Google Maps 中查看 →
-              </a>
-            </div>
-          `,
+      filteredRestaurants.forEach((restaurant) => {
+        const marker = new window.google.maps.Marker({
+          position: { lat: restaurant.latitude, lng: restaurant.longitude },
+          map: map,
+          title: restaurant.name,
+          icon: getCategoryIcon(restaurant.category),
         });
 
-        infoWindow.open(map, marker);
-        infoWindowRef.current = infoWindow;
+        const position = marker.getPosition();
+        if (position) {
+          bounds.extend(position);
+        }
 
-        // 移動地圖中心到標記
-        map.panTo(marker.getPosition()!);
+        marker.addListener("click", () => {
+          setSelectedMarker(restaurant);
+          onRestaurantSelect?.(restaurant);
+
+          // 關閉舊的 InfoWindow
+          if (infoWindowRef.current) {
+            infoWindowRef.current.close();
+          }
+
+          // 建立新的 InfoWindow
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `
+              <div style="font-family: 'Noto Sans TC', sans-serif; padding: 8px; max-width: 200px;">
+                <div style="font-weight: bold; color: #1B4332; margin-bottom: 4px; font-size: 14px;">
+                  ${restaurant.name}
+                </div>
+                <div style="font-size: 12px; color: #5D4E37; margin-bottom: 4px;">
+                  ${restaurant.food}
+                </div>
+                <div style="font-size: 11px; color: #8B7355; margin-bottom: 8px;">
+                  ${restaurant.address}
+                </div>
+                ${restaurant.michelin ? `
+                  <div style="font-size: 11px; color: #C0392B; font-weight: bold; margin-bottom: 4px;">
+                    ⭐ ${restaurant.michelin}
+                  </div>
+                ` : ''}
+                <a href="${restaurant.mapsUrl}" target="_blank" rel="noopener noreferrer" 
+                   style="color: #1B4332; text-decoration: none; font-size: 11px; font-weight: bold;">
+                  在 Google Maps 中查看 →
+                </a>
+              </div>
+            `,
+          });
+
+          infoWindow.open(map, marker);
+          infoWindowRef.current = infoWindow;
+
+          // 移動地圖中心到標記
+          const markerPosition = marker.getPosition();
+          if (markerPosition) {
+            map.panTo(markerPosition);
+          }
+        });
+
+        markersRef.current.push(marker);
       });
 
-      markersRef.current.push(marker);
-    });
-
-    // 調整地圖邊界以顯示所有標記
-    if (markersRef.current.length > 0) {
-      map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+      // 調整地圖邊界以顯示所有標記
+      if (markersRef.current.length > 0) {
+        map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+      }
+    } catch (error) {
+      console.error('Error initializing map:', error);
     }
 
     return () => {
       // 清理
       markersRef.current.forEach(marker => marker.setMap(null));
     };
-  }, [filteredRestaurants, onRestaurantSelect]);
+  }, [filteredRestaurants, onRestaurantSelect, mapLoaded]);
+
+  if (!mapLoaded) {
+    return (
+      <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-[#E8D5B0] flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="text-4xl mb-4">🗺️</div>
+          <p className="text-[#5D4E37]">正在載入地圖...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden shadow-lg border-2 border-[#E8D5B0]">
@@ -183,12 +223,12 @@ export function RestaurantMap({ selectedCategory = "all", onRestaurantSelect }: 
   );
 }
 
-function getCategoryIcon(category: string): google.maps.Icon | string {
-  const iconConfig = {
+function getCategoryIcon(category: string): string {
+  const iconConfig: Record<string, string> = {
     "fine-dining": "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
     "local": "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
     "street-food": "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
     "cafe-dessert": "http://maps.google.com/mapfiles/ms/icons/purple-dot.png",
   };
-  return iconConfig[category as keyof typeof iconConfig] || "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+  return iconConfig[category] || "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
 }
