@@ -543,8 +543,8 @@ export const restaurants: Restaurant[] = [
     food: "夜生活／娛樂",
     foodDescription: "位於越南北寧 Vũ Ninh 的 PB SPACE CLUB，屬於夜生活與娛樂場所。",
     mapsUrl: "https://maps.app.goo.gl/ZUV4nDecLyoDSDKr7",
-    latitude: 21.1868,
-    longitude: 106.0763,
+    latitude: 21.1998,
+    longitude: 106.09111,
   },
 ];
 
