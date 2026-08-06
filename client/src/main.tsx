@@ -1,5 +1,11 @@
-import { createRoot } from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { registerServiceWorker } from "./lib/sw-register";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// 註冊 Service Worker 支援 PWA
+registerServiceWorker();
+
+const root = ReactDOM.createRoot(document.getElementById("root")!);
+root.render(<App />);
