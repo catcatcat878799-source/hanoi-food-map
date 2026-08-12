@@ -74,6 +74,67 @@ function writeToLogFile(source: LogSource, entries: unknown[]) {
  * - Files: browserConsole.log, networkRequests.log, sessionReplay.log
  * - Auto-trimmed when exceeding 1MB (keeps newest entries)
  */
+function vitePluginDisableHmrClient(): Plugin {
+  return {
+    name: "disable-vite-hmr-client-in-preview",
+    enforce: "pre",
+    resolveId(id) {
+      if (id === "/@vite/client" || id === "@vite/client") {
+        return "\0manus-disabled-vite-client";
+      }
+      return undefined;
+    },
+    load(id) {
+      if (id === "\0manus-disabled-vite-client") {
+        return "export {};";
+      }
+      return undefined;
+    },
+    configureServer(server) {
+      server.middlewares.use("/@vite/client", (_req, res) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/javascript");
+        res.setHeader("Cache-Control", "no-store");
+        res.end(`
+const noop = () => {};
+const styles = new Map();
+export function createHotContext() {
+  return {
+    accept: noop,
+    acceptExports: noop,
+    dispose: noop,
+    prune: noop,
+    invalidate: noop,
+    decline: noop,
+    on: noop,
+    off: noop,
+    send: noop,
+  };
+}
+export function updateStyle(id, content) {
+  let style = styles.get(id);
+  if (!style) {
+    style = document.createElement("style");
+    style.setAttribute("data-vite-dev-id", id);
+    document.head.appendChild(style);
+    styles.set(id, style);
+  }
+  style.textContent = content;
+}
+export function removeStyle(id) {
+  const style = styles.get(id);
+  if (style) {
+    style.remove();
+    styles.delete(id);
+  }
+}
+export function injectQuery(url) { return url; }
+`);
+      });
+    },
+  };
+}
+
 function vitePluginManusDebugCollector(): Plugin {
   return {
     name: "manus-debug-collector",
@@ -210,6 +271,7 @@ function vitePluginStorageProxy(): Plugin {
 }
 
 const plugins = [
+  vitePluginDisableHmrClient(),
   react(),
   tailwindcss(),
   jsxLocPlugin(),
@@ -235,8 +297,15 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    strictPort: false, // Will find next available port if 3000 is busy
+    // Keep the dev server on the managed preview port so the HTTP and HMR
+    // proxy routes always target the same process.
+    strictPort: true,
     host: true,
+    // The managed preview proxy serves HTTP reliably but does not expose
+    // Vite's dev WebSocket endpoint. Disable the Vite HMR client so preview
+    // pages do not emit a connection error; the managed on-change preview
+    // still reloads the page after edits.
+    hmr: false,
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",
