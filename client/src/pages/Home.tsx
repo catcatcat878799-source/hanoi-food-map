@@ -194,7 +194,7 @@ export default function Home() {
               >
                 河內美食地圖
               </h1>
-              <p className="max-w-2xl text-base leading-relaxed text-white/80 md:text-xl">
+              <p className="max-w-2xl text-balance text-base leading-relaxed text-white/80 md:text-xl">
                 把影片裡的那一口，標回河內街頭。從老城湯鍋到湖畔咖啡，
                 {restaurants.length} 間店家、片段時間與地圖入口，沿著鏡頭慢慢走。
               </p>
