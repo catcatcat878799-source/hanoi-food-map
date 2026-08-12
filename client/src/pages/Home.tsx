@@ -1,3 +1,4 @@
+/* Design philosophy: Vietnamese Street Food Journal — warm editorial field notes, map-stamp branding, chopstick dividers, and photo-led storytelling. */
 import { useState, useMemo, useCallback } from "react";
 import {
   restaurants,
@@ -168,22 +169,36 @@ export default function Home() {
 
         <div className="relative container py-14 md:py-28">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-4 md:mb-6">
-              <MapPinned className="h-4 w-4 text-white/90" aria-hidden="true" />
-              <span className="text-sm text-white/90 font-medium">
-                河內美食探索
-              </span>
+            <div className="flex items-center gap-3 mb-5 md:mb-7">
+              <div className="brand-seal" aria-hidden="true">
+                <MapPinned className="h-5 w-5" />
+                <span>HN</span>
+              </div>
+              <div>
+                <p className="editorial-kicker text-white/80">
+                  HANOI · STREET FOOD JOURNAL
+                </p>
+                <div className="mt-1 flex items-center gap-2 text-xs text-white/70">
+                  <span className="h-px w-8 bg-[#E8C07D]" />
+                  <span>河內現場筆記 · 影片選店</span>
+                </div>
+              </div>
             </div>
-            <h1
-              className="text-3xl md:text-6xl font-bold text-white mb-3 md:mb-4 leading-tight"
-              style={{ fontFamily: "'Noto Serif TC', serif" }}
-            >
-              河內美食地圖
-            </h1>
-            <p className="text-base md:text-xl text-white/80 mb-6 md:mb-8 leading-relaxed max-w-2xl">
-              {restaurants.length} 間河內必吃店家完整指南 · 對應 YouTube
-              影片片段 · Google Maps 導航
-            </p>
+            <div className="max-w-3xl">
+              <p className="editorial-overline mb-3 text-[#F4D59A]">
+                VOL. 01 / OLD QUARTER TO WEST LAKE
+              </p>
+              <h1
+                className="text-4xl md:text-7xl font-bold text-white mb-4 md:mb-5 leading-[1.05]"
+                style={{ fontFamily: "'Noto Serif TC', serif" }}
+              >
+                河內美食地圖
+              </h1>
+              <p className="max-w-2xl text-base leading-relaxed text-white/80 md:text-xl">
+                把影片裡的那一口，標回河內街頭。從老城湯鍋到湖畔咖啡，
+                {restaurants.length} 間店家、片段時間與地圖入口，沿著鏡頭慢慢走。
+              </p>
+            </div>
             <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-4">
               <div className="flex flex-col items-center gap-2 text-center text-white/90 sm:flex-row sm:text-left">
                 <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
@@ -339,28 +354,44 @@ export default function Home() {
 
           {/* Main Content Area */}
           <div className="flex-1 min-w-0">
-            {/* Results Header */}
-            <div className="flex items-center justify-between mb-4 md:mb-6">
-              <p
-                className="text-sm text-[#5D4E37]"
-                role="status"
-                aria-live="polite"
-              >
-                共{" "}
-                <span className="font-bold text-[#1B4332]">
-                  {filteredRestaurants.length}
-                </span>{" "}
-                間店家
-                {activeCategory !== "all" && (
-                  <span className="ml-1">
-                    · {categories.find(c => c.id === activeCategory)?.label}
-                  </span>
-                )}
-              </p>
+            {/* Editorial section heading: the card grid reads like a curated issue, not a generic directory. */}
+            <div className="mb-5 md:mb-7">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="editorial-kicker text-[#C0392B]">THE SHORTLIST</p>
+                  <h2
+                    className="mt-1 text-2xl font-bold text-[#1B4332] md:text-3xl"
+                    style={{ fontFamily: "'Noto Serif TC', serif" }}
+                  >
+                    今晚，先從這裡開吃
+                  </h2>
+                </div>
+                <p
+                  className="text-sm text-[#5D4E37]"
+                  role="status"
+                  aria-live="polite"
+                >
+                  共{" "}
+                  <span className="font-bold text-[#1B4332]">
+                    {filteredRestaurants.length}
+                  </span>{" "}
+                  間店家
+                  {activeCategory !== "all" && (
+                    <span className="ml-1">
+                      · {categories.find(c => c.id === activeCategory)?.label}
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div className="editorial-divider mt-4" aria-hidden="true">
+                <span />
+                <span className="editorial-divider-label">筷子記號 · 影片時間線</span>
+                <span />
+              </div>
             </div>
 
             {/* Cards Grid */}
-            <div className="grid grid-cols-1 items-start md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-2">
               {visibleRestaurants.map((restaurant, index) => (
                 <RestaurantCard
                   key={restaurant.id}
@@ -369,6 +400,7 @@ export default function Home() {
                   onToggle={() => handleCardToggle(restaurant.id)}
                   onShare={() => void handleShare(restaurant)}
                   index={index}
+                  isFeatured={index === 0}
                 />
               ))}
             </div>
@@ -440,12 +472,14 @@ function RestaurantCard({
   onToggle,
   onShare,
   index,
+  isFeatured,
 }: {
   restaurant: Restaurant;
   isExpanded: boolean;
   onToggle: () => void;
   onShare: () => void;
   index: number;
+  isFeatured: boolean;
 }) {
   const Icon = categoryIcons[restaurant.category] || Sparkles;
   const [photoFailed, setPhotoFailed] = useState(false);
@@ -454,18 +488,24 @@ function RestaurantCard({
 
   return (
     <Card
-      className={`group self-start transition-all duration-300 border-2 ${
+      className={`group self-start overflow-hidden border-2 bg-white transition-all duration-300 ${
+        isFeatured ? "md:col-span-2" : ""
+      } ${
         isExpanded
           ? "border-[#C0392B] shadow-xl ring-2 ring-[#C0392B]/20"
           : "border-transparent hover:border-[#E8D5B0] hover:shadow-lg"
-      } bg-white overflow-hidden`}
+      }`}
       style={{
         animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`,
       }}
     >
       {/* Restaurant Photo */}
       {restaurant.photoUrl && !photoFailed && (
-        <div className="relative w-full h-40 overflow-hidden bg-gray-200">
+        <div
+          className={`relative w-full overflow-hidden bg-[#E8D5B0] ${
+            isFeatured ? "h-56 md:h-72" : "h-40 md:h-44"
+          }`}
+        >
           <img
             src={restaurant.photoUrl}
             alt={restaurant.name}
@@ -521,7 +561,8 @@ function RestaurantCard({
             <p className="text-xs text-[#8B7355] italic">{restaurant.nameVi}</p>
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
-            <div className="flex items-center gap-1 text-xs text-[#C0392B] font-mono font-bold bg-[#FDF2F0] px-2 py-1 rounded-md">
+            <div className="editorial-timecode flex items-center gap-1 text-xs font-mono font-bold text-[#C0392B]">
+              <span className="editorial-time-dot" aria-hidden="true" />
               <Clock className="w-3 h-3" />
               {restaurant.timestamp}
             </div>

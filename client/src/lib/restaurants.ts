@@ -58,6 +58,7 @@ export const restaurants: Restaurant[] = [
     michelin: "米其林必比登",
     latitude: 21.0893,
     longitude: 105.8289,
+    photoUrl: "/manus-storage/chao-ban_62b131c8.jpg",
   },
   {
     id: 4,
@@ -76,6 +77,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Don+Duck+Old+Quarter+29+Bat+Dan+Hanoi",
     latitude: 21.0318,
     longitude: 105.8538,
+    photoUrl: "/manus-storage/don-duck_beb5aa94.jpg",
   },
   {
     id: 5,
@@ -134,6 +136,7 @@ export const restaurants: Restaurant[] = [
     michelin: "米其林必比登",
     latitude: 21.0297,
     longitude: 105.8549,
+    photoUrl: "/manus-storage/pho-ga-nguyet_bbc56335.jpg",
   },
   {
     id: 8,
@@ -152,6 +155,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bao+An+Vegan+66B+Tran+Hung+Dao+Hanoi",
     latitude: 21.0286,
     longitude: 105.8487,
+    photoUrl: "/manus-storage/bao-an-vegan_1b12dae1.jpg",
   },
   {
     id: 9,
@@ -170,6 +174,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bánh+Đúc+Nóng+Bà+Nội+Lê+Ngọc+Hân+Hanoi",
     latitude: 21.0135,
     longitude: 105.8495,
+    photoUrl: "/manus-storage/banh-duc-ba-noi_8aa8840e.jpg",
   },
   {
     id: 10,
@@ -188,6 +193,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bún+Ziu+Gánh+104+Lương+Sử+C+Hanoi",
     latitude: 21.0173,
     longitude: 105.8379,
+    photoUrl: "/manus-storage/bun-ziu-ganh_efc5aa69.jpg",
   },
   {
     id: 11,
@@ -226,6 +232,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bún+Thang+Thanh+gia+truyền+Tôn+Thất+Thiệp+Hanoi",
     latitude: 21.0349,
     longitude: 105.835,
+    photoUrl: "/manus-storage/bun-thang-thanh_e3542ea1.jpeg",
   },
   {
     id: 13,
@@ -263,6 +270,7 @@ export const restaurants: Restaurant[] = [
     michelin: "米其林指南入選",
     latitude: 21.0301,
     longitude: 105.8543,
+    photoUrl: "/manus-storage/oc-vi-saigon_691ff806.jpg",
   },
   {
     id: 15,
@@ -282,6 +290,7 @@ export const restaurants: Restaurant[] = [
     michelin: "米其林指南入選",
     latitude: 21.0326,
     longitude: 105.8524,
+    photoUrl: "/manus-storage/mr-bay-mien-tay_da62baee.jpeg",
   },
   {
     id: 16,
@@ -319,6 +328,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Xôi+Mây+31+Lý+Thường+Kiệt+Hanoi",
     latitude: 21.0275,
     longitude: 105.8486,
+    photoUrl: "/manus-storage/xoi-may_53c74c00.jpg",
   },
   {
     id: 18,
@@ -338,6 +348,7 @@ export const restaurants: Restaurant[] = [
     michelin: "米其林指南入選",
     latitude: 21.0361,
     longitude: 105.8362,
+    photoUrl: "/manus-storage/banh-cuon-ba-xuan_968492d3.jpeg",
   },
   {
     id: 19,
@@ -374,6 +385,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bánh+Tráng+Bé+My+33+Quang+Trung+Hanoi",
     latitude: 21.0296,
     longitude: 105.8462,
+    photoUrl: "/manus-storage/banh-trang-be-my_dfccb393.jpeg",
   },
   {
     id: 21,
@@ -392,6 +404,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Nem+Chua+Rán+Thành+Xăm+38+Hang+Bong+Hanoi",
     latitude: 21.0334,
     longitude: 105.854,
+    photoUrl: "/manus-storage/nem-chua-ran-thanh-xam_4e41059d.jpeg",
   },
   {
     id: 22,
@@ -428,6 +441,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Bún+Đậu+An+An+7+Ngõ+Gạch+Hanoi",
     latitude: 21.0305,
     longitude: 105.852,
+    photoUrl: "/manus-storage/bun-dau-an-an_34bbcd00.jpeg",
   },
   {
     id: 24,
@@ -464,6 +478,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Hidden+Gem+Cafe+Hanoi+3B+Hang+Tre",
     latitude: 21.0318,
     longitude: 105.8548,
+    photoUrl: "/manus-storage/hidden-gem-cafe_e3343a0c.jpg",
   },
   {
     id: 26,
@@ -482,6 +497,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Cafe+Duy+Trí+43A+Yên+Phụ+Hanoi",
     latitude: 21.089,
     longitude: 105.8258,
+    photoUrl: "/manus-storage/cafe-duy-tri_de69f016.jpg",
   },
   {
     id: 27,
@@ -500,6 +516,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Xôi+chè+Bà+Thìn+1+Bát+Đàn+Hanoi",
     latitude: 21.032,
     longitude: 105.854,
+    photoUrl: "/manus-storage/xoi-che-ba-thin_0a3e4917.jpeg",
   },
   {
     id: 28,
@@ -518,6 +535,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Zô+Zô+Tofu+Pudding+Hàng+Bè+Hanoi",
     latitude: 21.0325,
     longitude: 105.854,
+    photoUrl: "/manus-storage/zo-zo-tofu_33202411.jpg",
   },
   {
     id: 29,
@@ -536,6 +554,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Kem+Tràng+Tiền+35+Trang+Tien+Hanoi",
     latitude: 21.0285,
     longitude: 105.849,
+    photoUrl: "/manus-storage/trang-tien-ice-cream_fd0e16f2.jpg",
   },
   {
     id: 30,
@@ -554,6 +573,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Chè+Yến+Ngõ+Chợ+Đồng+Xuân+Hanoi",
     latitude: 21.0328,
     longitude: 105.8545,
+    photoUrl: "/manus-storage/che-yen_69b9b7d8.jpg",
   },
   {
     id: 31,
@@ -572,6 +592,7 @@ export const restaurants: Restaurant[] = [
       "https://www.google.com/maps/search/?api=1&query=Kem+Trứng+Bà+Khanh+55B+Hai+Ba+Trung+Hanoi",
     latitude: 21.0284,
     longitude: 105.8485,
+    photoUrl: "/manus-storage/kem-trung-ba-khanh_f5de3290.jpg",
   },
 ];
 

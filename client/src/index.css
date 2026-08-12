@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Design philosophy: Vietnamese Street Food Journal — paper texture, restrained vermilion accents, map-stamp branding, and editorial rhythm. */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -146,6 +148,81 @@
 }
 
 @layer components {
+  .editorial-kicker {
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .editorial-overline {
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .brand-seal {
+    display: flex;
+    width: 3.35rem;
+    height: 3.35rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.08rem;
+    border: 1px solid rgba(244, 213, 154, 0.8);
+    border-radius: 46% 46% 18% 18%;
+    background: rgba(27, 67, 50, 0.45);
+    color: #f4d59a;
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 0.55rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    transform: rotate(-4deg);
+    box-shadow: 0 0 0 4px rgba(244, 213, 154, 0.08);
+  }
+
+  .brand-seal svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .editorial-divider {
+    display: grid;
+    grid-template-columns: minmax(2rem, 1fr) auto minmax(2rem, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .editorial-divider > span:first-child,
+  .editorial-divider > span:last-child {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c0392b 28%, #c0392b 72%, transparent);
+  }
+
+  .editorial-divider-label {
+    color: #8b7355;
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+  }
+
+  .editorial-timecode {
+    letter-spacing: 0.04em;
+  }
+
+  .editorial-time-dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: #c0392b;
+    box-shadow: 0 0 0 3px #fdf2f0;
+  }
+
   .category-scroller {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -193,6 +270,13 @@
       padding-left: 2rem; /* 32px - desktop padding */
       padding-right: 2rem;
       max-width: 1280px; /* Standard content width */
+    }
+  }
+
+  @media (max-width: 639px) {
+    .editorial-divider-label {
+      font-size: 0.53rem;
+      letter-spacing: 0.08em;
     }
   }
 }
