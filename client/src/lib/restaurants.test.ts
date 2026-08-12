@@ -3,6 +3,15 @@ import { batchValidate } from "./batch-import";
 import { categories, restaurants } from "./restaurants";
 
 describe("restaurants dataset", () => {
+  it("exposes only the four restaurant categories", () => {
+    expect(categories.map(category => category.id)).toEqual([
+      "fine-dining",
+      "local",
+      "street-food",
+      "cafe-dessert",
+    ]);
+  });
+
   it("contains 30 unique Hanoi restaurants", () => {
     expect(restaurants).toHaveLength(30);
     expect(new Set(restaurants.map(restaurant => restaurant.id)).size).toBe(
@@ -14,15 +23,13 @@ describe("restaurants dataset", () => {
   });
 
   it("keeps category totals consistent", () => {
-    const categoryTotal = categories
-      .filter(category => category.id !== "all")
-      .reduce(
-        (total, category) =>
-          total +
-          restaurants.filter(restaurant => restaurant.category === category.id)
-            .length,
-        0
-      );
+    const categoryTotal = categories.reduce(
+      (total, category) =>
+        total +
+        restaurants.filter(restaurant => restaurant.category === category.id)
+          .length,
+      0
+    );
 
     expect(categoryTotal).toBe(restaurants.length);
   });

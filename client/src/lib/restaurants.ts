@@ -597,7 +597,6 @@ export const restaurants: Restaurant[] = [
 ];
 
 export const categories = [
-  { id: "all", label: "全部店家" },
   { id: "fine-dining", label: "高級餐廳" },
   { id: "local", label: "在地特色小店" },
   { id: "street-food", label: "街頭小吃" },

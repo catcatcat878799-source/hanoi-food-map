@@ -9,7 +9,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Award,
   BarChart3,
@@ -19,12 +18,9 @@ import {
   Coffee,
   ExternalLink,
   House,
-  ListFilter,
   MapPin,
   MapPinned,
   Play,
-  Search,
-  SearchX,
   Share2,
   Soup,
   Sparkles,
@@ -35,58 +31,42 @@ import { toast } from "sonner";
 type CategoryId = (typeof categories)[number]["id"];
 
 const categoryIcons: Record<CategoryId, typeof Sparkles> = {
-  all: ListFilter,
   "fine-dining": Sparkles,
   local: House,
   "street-food": Soup,
   "cafe-dessert": Coffee,
 };
 
+const defaultCategory: CategoryId = "fine-dining";
+
 function getInitialCategory(): CategoryId {
-  if (typeof window === "undefined") return "all";
+  if (typeof window === "undefined") return defaultCategory;
 
   const requestedCategory = new URLSearchParams(window.location.search).get(
     "category"
   );
   return categories.some(category => category.id === requestedCategory)
     ? (requestedCategory as CategoryId)
-    : "all";
+    : defaultCategory;
 }
 
 export default function Home() {
   const [activeCategory, setActiveCategory] =
     useState<CategoryId>(getInitialCategory);
-  const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(12);
 
-  const filteredRestaurants = useMemo(() => {
-    return restaurants.filter(r => {
-      const matchesCategory =
-        activeCategory === "all" || r.category === activeCategory;
-      const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-      const matchesSearch =
-        normalizedQuery === "" ||
-        [
-          r.name,
-          r.nameVi,
-          r.food,
-          r.foodDescription,
-          r.address,
-          r.district,
-        ].some(value => value.toLocaleLowerCase().includes(normalizedQuery));
-      return matchesCategory && matchesSearch;
-    });
-  }, [activeCategory, searchQuery]);
+  const filteredRestaurants = useMemo(
+    () => restaurants.filter(r => r.category === activeCategory),
+    [activeCategory]
+  );
 
   const visibleRestaurants = filteredRestaurants.slice(0, visibleCount);
 
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: restaurants.length };
+    const counts = {} as Record<CategoryId, number>;
     categories.forEach(cat => {
-      if (cat.id !== "all") {
-        counts[cat.id] = restaurants.filter(r => r.category === cat.id).length;
-      }
+      counts[cat.id] = restaurants.filter(r => r.category === cat.id).length;
     });
     return counts;
   }, []);
@@ -102,22 +82,12 @@ export default function Home() {
     setExpandedId(null);
 
     const url = new URL(window.location.href);
-    if (category === "all") {
-      url.searchParams.delete("category");
-    } else {
-      url.searchParams.set("category", category);
-    }
+    url.searchParams.set("category", category);
     window.history.replaceState(
       null,
       "",
       `${url.pathname}${url.search}${url.hash}`
     );
-  }, []);
-
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchQuery(value);
-    setVisibleCount(12);
-    setExpandedId(null);
   }, []);
 
   const handleCardToggle = useCallback((id: number) => {
@@ -196,7 +166,8 @@ export default function Home() {
               </h1>
               <p className="max-w-2xl text-balance text-base leading-relaxed text-white/80 md:text-xl">
                 把影片裡的那一口，標回河內街頭。從老城湯鍋到湖畔咖啡，
-                {restaurants.length} 間店家、片段時間與地圖入口，沿著鏡頭慢慢走。
+                {restaurants.length}{" "}
+                間店家、片段時間與地圖入口，沿著鏡頭慢慢走。
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-4">
@@ -231,30 +202,12 @@ export default function Home() {
           {/* Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
             <div className="space-y-4 lg:sticky lg:top-6 lg:space-y-6">
-              {/* Search */}
-              <div>
-                <div className="relative">
-                  <label htmlFor="restaurant-search" className="sr-only">
-                    搜尋店家、食物或地址
-                  </label>
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="restaurant-search"
-                    type="search"
-                    placeholder="搜尋店家、食物或地址..."
-                    value={searchQuery}
-                    onChange={e => handleSearchChange(e.target.value)}
-                    className="pl-10 bg-white border-[#E8D5B0]"
-                  />
-                </div>
-              </div>
-
               {/* Category Filter */}
               <div>
                 <h3 className="text-sm font-semibold text-[#5D4E37] mb-3 px-2">
                   分類篩選
                 </h3>
-                <div className="category-scroller flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-1 lg:gap-1">
                   {categories.map(cat => {
                     const CategoryIcon = categoryIcons[cat.id];
                     return (
@@ -263,21 +216,32 @@ export default function Home() {
                         type="button"
                         aria-pressed={activeCategory === cat.id}
                         onClick={() => handleCategoryChange(cat.id)}
-                        className={`flex w-auto flex-shrink-0 items-center justify-between gap-3 whitespace-nowrap px-3 py-2.5 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C0392B] focus-visible:ring-offset-2 lg:w-full ${
+                        className={`flex min-h-16 w-full min-w-0 items-center gap-2 rounded-lg px-3 py-3 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C0392B] focus-visible:ring-offset-2 lg:min-h-0 lg:justify-between lg:py-2.5 ${
                           activeCategory === cat.id
                             ? "bg-[#C0392B] text-white shadow-md"
                             : "text-[#5D4E37] hover:bg-[#F5E6CC]"
                         }`}
                       >
-                        <span className="flex items-center gap-2">
+                        <span className="flex min-w-0 items-center gap-2">
                           <CategoryIcon
-                            className="h-4 w-4"
+                            className="h-4 w-4 shrink-0"
                             aria-hidden="true"
                           />
-                          {cat.label}
+                          <span className="min-w-0 text-left leading-tight">
+                            <span className="block">{cat.label}</span>
+                            <span
+                              className={`mt-1 block text-xs lg:hidden ${
+                                activeCategory === cat.id
+                                  ? "text-white/75"
+                                  : "text-[#8B7355]"
+                              }`}
+                            >
+                              {categoryCounts[cat.id]} 間
+                            </span>
+                          </span>
                         </span>
                         <span
-                          className={`text-xs px-2 py-0.5 rounded-full ${
+                          className={`hidden rounded-full px-2 py-0.5 text-xs lg:inline-flex ${
                             activeCategory === cat.id
                               ? "bg-white/20"
                               : "bg-[#E8D5B0]"
@@ -358,7 +322,9 @@ export default function Home() {
             <div className="mb-5 md:mb-7">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="editorial-kicker text-[#C0392B]">THE SHORTLIST</p>
+                  <p className="editorial-kicker text-[#C0392B]">
+                    THE SHORTLIST
+                  </p>
                   <h2
                     className="mt-1 text-2xl font-bold text-[#1B4332] md:text-3xl"
                     style={{ fontFamily: "'Noto Serif TC', serif" }}
@@ -376,16 +342,16 @@ export default function Home() {
                     {filteredRestaurants.length}
                   </span>{" "}
                   間店家
-                  {activeCategory !== "all" && (
-                    <span className="ml-1">
-                      · {categories.find(c => c.id === activeCategory)?.label}
-                    </span>
-                  )}
+                  <span className="ml-1">
+                    · {categories.find(c => c.id === activeCategory)?.label}
+                  </span>
                 </p>
               </div>
               <div className="editorial-divider mt-4" aria-hidden="true">
                 <span />
-                <span className="editorial-divider-label">筷子記號 · 影片時間線</span>
+                <span className="editorial-divider-label">
+                  筷子記號 · 影片時間線
+                </span>
                 <span />
               </div>
             </div>
@@ -416,20 +382,6 @@ export default function Home() {
                   再顯示{" "}
                   {Math.min(12, filteredRestaurants.length - visibleCount)} 間
                 </Button>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {filteredRestaurants.length === 0 && (
-              <div className="text-center py-20">
-                <SearchX
-                  className="mx-auto mb-4 h-14 w-14 text-[#C0392B]"
-                  aria-hidden="true"
-                />
-                <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
-                <p className="text-sm text-[#8B7355] mt-2">
-                  請嘗試其他搜尋關鍵字或分類
-                </p>
               </div>
             )}
           </div>

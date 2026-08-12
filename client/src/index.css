@@ -199,7 +199,13 @@
   .editorial-divider > span:first-child,
   .editorial-divider > span:last-child {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #c0392b 28%, #c0392b 72%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #c0392b 28%,
+      #c0392b 72%,
+      transparent
+    );
   }
 
   .editorial-divider-label {
@@ -221,15 +227,6 @@
     border-radius: 999px;
     background: #c0392b;
     box-shadow: 0 0 0 3px #fdf2f0;
-  }
-
-  .category-scroller {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .category-scroller::-webkit-scrollbar {
-    display: none;
   }
 
   /**
