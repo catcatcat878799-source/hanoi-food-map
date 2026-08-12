@@ -21,24 +21,6 @@ export const videoId = "1xDSI-ClLaY";
 
 export const restaurants: Restaurant[] = [
   {
-    id: 1,
-    name: "Anan Saigon",
-    nameVi: "Anan Saigon",
-    category: "fine-dining",
-    categoryLabel: "高級餐廳",
-    timestamp: "00:00",
-    timestampSeconds: 0,
-    address: "89 Tôn Thất Đạm, District 1, Ho Chi Minh City",
-    district: "胡志明市",
-    food: "米其林一星越式料理",
-    foodDescription: "將街頭美食提升至精緻料理層次，由名廚 Peter Cuong Franklin 主理，位於傳統市場內的米其林一星餐廳。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Anan+Saigon+Ho+Chi+Minh+City",
-    michelin: "米其林一星",
-    latitude: 10.7769,
-    longitude: 106.6966,
-    photoUrl: "/manus-storage/anan-saigon-2_d76a2941.jpeg",
-  },
-  {
     id: 2,
     name: "La Badiane",
     nameVi: "La Badiane",
@@ -49,8 +31,10 @@ export const restaurants: Restaurant[] = [
     address: "10 P. Nam Ngư, Cửa Nam, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "法式越式融合料理",
-    foodDescription: "米其林指南入選餐廳，融合法式與越式料理手法，提供蓮藕蓮子牛肉披薩、蓮子糙米飯等創意菜色。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=La+Badiane+10+Nam+Ngu+Hanoi",
+    foodDescription:
+      "米其林指南入選餐廳，融合法式與越式料理手法，提供蓮藕蓮子牛肉披薩、蓮子糙米飯等創意菜色。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=La+Badiane+10+Nam+Ngu+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0285,
     longitude: 105.8554,
@@ -67,8 +51,10 @@ export const restaurants: Restaurant[] = [
     address: "98 P. Tô Ngọc Vân, Tây Hồ, Hà Nội",
     district: "河內西湖區",
     food: "創意越式料理",
-    foodDescription: "位於西湖區巷弄內的法式別墅餐廳，主廚 Madame Hang 將傳統越式食譜注入創意，提供蟹肉炸春捲、椰奶大蝦、芭蕉葉烤鱸魚等。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Chào+Bạn+98+To+Ngoc+Van+Hanoi",
+    foodDescription:
+      "位於西湖區巷弄內的法式別墅餐廳，主廚 Madame Hang 將傳統越式食譜注入創意，提供蟹肉炸春捲、椰奶大蝦、芭蕉葉烤鱸魚等。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Chào+Bạn+98+To+Ngoc+Van+Hanoi",
     michelin: "米其林必比登",
     latitude: 21.0893,
     longitude: 105.8289,
@@ -84,8 +70,10 @@ export const restaurants: Restaurant[] = [
     address: "29 P. Bát Đàn, Cửa Đông, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "鴨肉專賣",
-    foodDescription: "鴨肉專賣餐廳，提供鴨肉炸春捲、烤鴨胸肉、銅盤烤鴨肉配米線等多樣鴨肉料理。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Don+Duck+Old+Quarter+29+Bat+Dan+Hanoi",
+    foodDescription:
+      "鴨肉專賣餐廳，提供鴨肉炸春捲、烤鴨胸肉、銅盤烤鴨肉配米線等多樣鴨肉料理。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Don+Duck+Old+Quarter+29+Bat+Dan+Hanoi",
     latitude: 21.0318,
     longitude: 105.8538,
   },
@@ -100,8 +88,10 @@ export const restaurants: Restaurant[] = [
     address: "49 P. Bát Đàn, Cửa Đông, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "牛肉河粉",
-    foodDescription: "傳承數代的家族牛肉河粉老店，推薦半生半熟口味，可加生蛋與油條，是河內排隊名店。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Phở+Gia+Truyền+49+Bat+Dan+Hanoi",
+    foodDescription:
+      "傳承數代的家族牛肉河粉老店，推薦半生半熟口味，可加生蛋與油條，是河內排隊名店。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Phở+Gia+Truyền+49+Bat+Dan+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0317,
     longitude: 105.8543,
@@ -118,8 +108,10 @@ export const restaurants: Restaurant[] = [
     address: "13 P. Lò Đúc, Ngô Thì Nhậm, Hai Bà Trưng, Hà Nội",
     district: "河內二徵夫人區",
     food: "蔥爆牛肉河粉",
-    foodDescription: "1979年創立的傳奇河粉店，以獨特的蔥爆牛肉河粉聞名，重口味搭配大量青蔥，是河內必吃名店。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Phở+Thìn+13+Lo+Duc+Hanoi",
+    foodDescription:
+      "1979年創立的傳奇河粉店，以獨特的蔥爆牛肉河粉聞名，重口味搭配大量青蔥，是河內必吃名店。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Phở+Thìn+13+Lo+Duc+Hanoi",
     latitude: 21.0165,
     longitude: 105.8507,
     photoUrl: "/manus-storage/pho-thin_2347a3e6.jpg",
@@ -135,8 +127,10 @@ export const restaurants: Restaurant[] = [
     address: "5B P. Phủ Doãn, Hàng Trống, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "雞肉河粉",
-    foodDescription: "米其林必比登推薦的雞肉河粉專賣店，提供湯河粉與乾拌河粉兩種選擇，雞胸肉鮮嫩多汁。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Phở+Gà+Nguyệt+5B+Phu+Doan+Hanoi",
+    foodDescription:
+      "米其林必比登推薦的雞肉河粉專賣店，提供湯河粉與乾拌河粉兩種選擇，雞胸肉鮮嫩多汁。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Phở+Gà+Nguyệt+5B+Phu+Doan+Hanoi",
     michelin: "米其林必比登",
     latitude: 21.0297,
     longitude: 105.8549,
@@ -152,8 +146,10 @@ export const restaurants: Restaurant[] = [
     address: "66B P. Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "素食法國麵包",
-    foodDescription: "隱藏於巷弄內的素食街頭美食店，提供素食法國麵包 (Vegan Banh Mi) 與素炸餃子，平價美味。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bao+An+Vegan+66B+Tran+Hung+Dao+Hanoi",
+    foodDescription:
+      "隱藏於巷弄內的素食街頭美食店，提供素食法國麵包 (Vegan Banh Mi) 與素炸餃子，平價美味。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bao+An+Vegan+66B+Tran+Hung+Dao+Hanoi",
     latitude: 21.0286,
     longitude: 105.8487,
   },
@@ -168,8 +164,10 @@ export const restaurants: Restaurant[] = [
     address: "Ngõ 8 P. Lê Ngọc Hân, Ngô Thì Nhậm, Hai Bà Trưng, Hà Nội",
     district: "河內二徵夫人區",
     food: "熱米糊",
-    foodDescription: "超過30年歷史的熱米糊 (Bánh Đúc) 老店，內含炸蔥、肉末、木耳與炸豆腐，口感豐富。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bánh+Đúc+Nóng+Bà+Nội+Lê+Ngọc+Hân+Hanoi",
+    foodDescription:
+      "超過30年歷史的熱米糊 (Bánh Đúc) 老店，內含炸蔥、肉末、木耳與炸豆腐，口感豐富。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bánh+Đúc+Nóng+Bà+Nội+Lê+Ngọc+Hân+Hanoi",
     latitude: 21.0135,
     longitude: 105.8495,
   },
@@ -184,8 +182,10 @@ export const restaurants: Restaurant[] = [
     address: "C/104 Lương Sử C, Quốc Tử Giám, Văn Chương, Đống Đa, Hà Nội",
     district: "河內棟多區",
     food: "蟹湯米線",
-    foodDescription: "隱藏於暗巷內的懷舊風蟹湯米線 (Bún Riêu) 店，復古客廳風格裝潢，湯頭鮮美濃郁。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Ziu+Gánh+104+Lương+Sử+C+Hanoi",
+    foodDescription:
+      "隱藏於暗巷內的懷舊風蟹湯米線 (Bún Riêu) 店，復古客廳風格裝潢，湯頭鮮美濃郁。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Ziu+Gánh+104+Lương+Sử+C+Hanoi",
     latitude: 21.0173,
     longitude: 105.8379,
   },
@@ -200,8 +200,10 @@ export const restaurants: Restaurant[] = [
     address: "114 P. Mai Hắc Đế, Hai Bà Trưng, Hà Nội",
     district: "河內二徵夫人區",
     food: "烤肉米線",
-    foodDescription: "米其林指南入選的烤肉米線 (Bún Chả) 店，含五花肉與厚實肉餅，炭烤香氣十足。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Chả+Chan+114+Mai+Hac+De+Hanoi",
+    foodDescription:
+      "米其林指南入選的烤肉米線 (Bún Chả) 店，含五花肉與厚實肉餅，炭烤香氣十足。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Chả+Chan+114+Mai+Hac+De+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0103,
     longitude: 105.8568,
@@ -218,10 +220,12 @@ export const restaurants: Restaurant[] = [
     address: "2 Ngõ 23 Tôn Thất Thiệp, Ba Đình, Hà Nội",
     district: "河內巴亭區",
     food: "雞絲米線",
-    foodDescription: "傳承家族的雞絲米線 (Bún Thang) 專賣店，隱藏於寧靜巷弄內，湯頭清甜，配料豐富。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Thang+Thanh+gia+truyền+Tôn+Thất+Thiệp+Hanoi",
+    foodDescription:
+      "傳承家族的雞絲米線 (Bún Thang) 專賣店，隱藏於寧靜巷弄內，湯頭清甜，配料豐富。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Thang+Thanh+gia+truyền+Tôn+Thất+Thiệp+Hanoi",
     latitude: 21.0349,
-    longitude: 105.8350,
+    longitude: 105.835,
   },
   {
     id: 13,
@@ -234,8 +238,10 @@ export const restaurants: Restaurant[] = [
     address: "14 Ngõ Trung Yên, Đinh Liệt, Hàng Bạc, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "鴨肉湯麵",
-    foodDescription: "位於狹窄巷弄內的鴨肉湯麵 (Bún Ngan) 店，以獨特的「罵客」服務風格聞名，鴨肉鮮嫩。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Ngan+Nhàn+Ngõ+Trung+Yên+Hanoi",
+    foodDescription:
+      "位於狹窄巷弄內的鴨肉湯麵 (Bún Ngan) 店，以獨特的「罵客」服務風格聞名，鴨肉鮮嫩。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Ngan+Nhàn+Ngõ+Trung+Yên+Hanoi",
     latitude: 21.0315,
     longitude: 105.8525,
   },
@@ -250,8 +256,10 @@ export const restaurants: Restaurant[] = [
     address: "21 P. Gia Ngư, Hàng Bạc, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "螺肉料理",
-    foodDescription: "米其林指南入選的螺肉專賣店，提供蒜蓉奶油炒螺、鹹蛋黃炒螺、檸檬葉蒸螺、烤螺等各類螺肉料理。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Ốc+Vi+Saigon+21+Gia+Ngư+Hanoi",
+    foodDescription:
+      "米其林指南入選的螺肉專賣店，提供蒜蓉奶油炒螺、鹹蛋黃炒螺、檸檬葉蒸螺、烤螺等各類螺肉料理。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Ốc+Vi+Saigon+21+Gia+Ngư+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0301,
     longitude: 105.8543,
@@ -267,8 +275,10 @@ export const restaurants: Restaurant[] = [
     address: "79 P. Hàng Điếu, Cửa Đông, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "越南煎餅",
-    foodDescription: "米其林指南入選的越南煎餅 (Bánh Xèo) 專賣店，內含豆芽、魚塊、蝦與魷魚，餅皮酥脆可口。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Mr+Bảy+Miền+Tây+79+Hang+Dieu+Hanoi",
+    foodDescription:
+      "米其林指南入選的越南煎餅 (Bánh Xèo) 專賣店，內含豆芽、魚塊、蝦與魷魚，餅皮酥脆可口。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Mr+Bảy+Miền+Tây+79+Hang+Dieu+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0326,
     longitude: 105.8524,
@@ -284,8 +294,10 @@ export const restaurants: Restaurant[] = [
     address: "7 P. Hàng Da, Hàng Bông, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "法國麵包",
-    foodDescription: "老城區內的法國麵包 (Banh Mi) 名店，推薦酪梨蛋起司口味，每日6:30-22:00營業。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Vui+7+Hang+Da+Hanoi",
+    foodDescription:
+      "老城區內的法國麵包 (Banh Mi) 名店，推薦酪梨蛋起司口味，每日6:30-22:00營業。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bánh+Mì+Vui+7+Hang+Da+Hanoi",
     latitude: 21.0324,
     longitude: 105.8543,
     photoUrl: "/manus-storage/banh-mi-vui_0495dacc.jpg",
@@ -301,8 +313,10 @@ export const restaurants: Restaurant[] = [
     address: "31 P. Lý Thường Kiệt, Hàng Bài, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "糯米飯",
-    foodDescription: "路邊小攤的糯米飯 (Xôi Xéo) 名店，配綠豆泥、肉鬆、火腿與滷肉，每日5:30-13:30營業。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Xôi+Mây+31+Lý+Thường+Kiệt+Hanoi",
+    foodDescription:
+      "路邊小攤的糯米飯 (Xôi Xéo) 名店，配綠豆泥、肉鬆、火腿與滷肉，每日5:30-13:30營業。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Xôi+Mây+31+Lý+Thường+Kiệt+Hanoi",
     latitude: 21.0275,
     longitude: 105.8486,
   },
@@ -317,8 +331,10 @@ export const restaurants: Restaurant[] = [
     address: "16 Dốc P. Hoè Nhai, Nguyễn Trung Trực, Ba Đình, Hà Nội",
     district: "河內巴亭區",
     food: "越南粉捲",
-    foodDescription: "米其林指南入選的越南粉捲 (Bánh cuốn) 老店，超過30年歷史，推薦蛋捲口味，蒸製米皮薄透滑嫩。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bánh+cuốn+Bà+Xuân+16+Hoe+Nhai+Hanoi",
+    foodDescription:
+      "米其林指南入選的越南粉捲 (Bánh cuốn) 老店，超過30年歷史，推薦蛋捲口味，蒸製米皮薄透滑嫩。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bánh+cuốn+Bà+Xuân+16+Hoe+Nhai+Hanoi",
     michelin: "米其林指南入選",
     latitude: 21.0361,
     longitude: 105.8362,
@@ -334,8 +350,10 @@ export const restaurants: Restaurant[] = [
     address: "3 P. Hòe Nhai, Nguyễn Trung Trực, Ba Đình, Hà Nội",
     district: "河內巴亭區",
     food: "鴨肉米線",
-    foodDescription: "Hòe Nhai街尾的鴨肉米線店，提供鴨肉米線與番鴨肉盤，平價實在。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Ngan+Hòe+Nhai+3+Hoe+Nhai+Hanoi",
+    foodDescription:
+      "Hòe Nhai街尾的鴨肉米線店，提供鴨肉米線與番鴨肉盤，平價實在。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Ngan+Hòe+Nhai+3+Hoe+Nhai+Hanoi",
     latitude: 21.0365,
     longitude: 105.8361,
   },
@@ -350,8 +368,10 @@ export const restaurants: Restaurant[] = [
     address: "33/20 P. Quang Trung, Trần Hưng Đạo, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "越式米紙點心",
-    foodDescription: "越式米紙點心專賣店，提供起司豬肉烤米紙等多種口味，深受年輕人喜愛的街頭小吃。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bánh+Tráng+Bé+My+33+Quang+Trung+Hanoi",
+    foodDescription:
+      "越式米紙點心專賣店，提供起司豬肉烤米紙等多種口味，深受年輕人喜愛的街頭小吃。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bánh+Tráng+Bé+My+33+Quang+Trung+Hanoi",
     latitude: 21.0296,
     longitude: 105.8462,
   },
@@ -366,10 +386,12 @@ export const restaurants: Restaurant[] = [
     address: "38 P. Hàng Bông, Hàng Gai, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "炸酸肉",
-    foodDescription: "河內炸物街上的炸酸肉名店，提供炸酸肉、烤酸肉串、炸物拼盤，酥脆酸香。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Nem+Chua+Rán+Thành+Xăm+38+Hang+Bong+Hanoi",
+    foodDescription:
+      "河內炸物街上的炸酸肉名店，提供炸酸肉、烤酸肉串、炸物拼盤，酥脆酸香。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Nem+Chua+Rán+Thành+Xăm+38+Hang+Bong+Hanoi",
     latitude: 21.0334,
-    longitude: 105.8540,
+    longitude: 105.854,
   },
   {
     id: 22,
@@ -382,9 +404,11 @@ export const restaurants: Restaurant[] = [
     address: "3 Đ. Thụy Khuê, Tây Hồ, Hà Nội",
     district: "河內西湖區",
     food: "肉粽",
-    foodDescription: "肉粽 (Bánh Giò) 專賣店，口感像米糊的鹹米布丁，內含豬肉與香菇，每日6:00-21:00營業。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bánh+Giò+Cô+Béo+3+Thụy+Khuê+Hanoi",
-    latitude: 21.0840,
+    foodDescription:
+      "肉粽 (Bánh Giò) 專賣店，口感像米糊的鹹米布丁，內含豬肉與香菇，每日6:00-21:00營業。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bánh+Giò+Cô+Béo+3+Thụy+Khuê+Hanoi",
+    latitude: 21.084,
     longitude: 105.8265,
   },
   {
@@ -398,10 +422,12 @@ export const restaurants: Restaurant[] = [
     address: "7 Ngõ Gạch, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "蝦醬豆腐米線",
-    foodDescription: "蝦醬豆腐米線拼盤 (Bún Đậu Mắm Tôm) 專賣店，炸豆腐配米線與蝦醬，道地河內風味。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bún+Đậu+An+An+7+Ngõ+Gạch+Hanoi",
+    foodDescription:
+      "蝦醬豆腐米線拼盤 (Bún Đậu Mắm Tôm) 專賣店，炸豆腐配米線與蝦醬，道地河內風味。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bún+Đậu+An+An+7+Ngõ+Gạch+Hanoi",
     latitude: 21.0305,
-    longitude: 105.8520,
+    longitude: 105.852,
   },
   {
     id: 24,
@@ -414,8 +440,10 @@ export const restaurants: Restaurant[] = [
     address: "41 P. Nguyễn Siêu, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "鱘魚火鍋",
-    foodDescription: "鱘魚火鍋 (Lẩu cá tầm) 路邊攤，平價美味的老城區火鍋選擇，每日18:00-23:00營業。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bếp+Chíp+Mít+41+Nguyễn+Siêu+Hanoi",
+    foodDescription:
+      "鱘魚火鍋 (Lẩu cá tầm) 路邊攤，平價美味的老城區火鍋選擇，每日18:00-23:00營業。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Bếp+Chíp+Mít+41+Nguyễn+Siêu+Hanoi",
     latitude: 21.0334,
     longitude: 105.8545,
   },
@@ -430,8 +458,10 @@ export const restaurants: Restaurant[] = [
     address: "3B P. Hàng Tre, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "蛋咖啡",
-    foodDescription: "隱藏於老城區巷弄內的特色咖啡廳，提供蛋咖啡 (Egg Coffee) 與椰子咖啡，每日7:00-22:00營業。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Hidden+Gem+Cafe+Hanoi+3B+Hang+Tre",
+    foodDescription:
+      "隱藏於老城區巷弄內的特色咖啡廳，提供蛋咖啡 (Egg Coffee) 與椰子咖啡，每日7:00-22:00營業。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Hidden+Gem+Cafe+Hanoi+3B+Hang+Tre",
     latitude: 21.0318,
     longitude: 105.8548,
   },
@@ -446,9 +476,11 @@ export const restaurants: Restaurant[] = [
     address: "43A P. Yên Phụ, Yên Phụ, Tây Hồ, Hà Nội",
     district: "河內西湖區",
     food: "優格咖啡冰沙",
-    foodDescription: "1936年創立的90年老字號咖啡店，位於西湖附近的老建築內，首創優格咖啡冰沙與紫米優格。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Cafe+Duy+Trí+43A+Yên+Phụ+Hanoi",
-    latitude: 21.0890,
+    foodDescription:
+      "1936年創立的90年老字號咖啡店，位於西湖附近的老建築內，首創優格咖啡冰沙與紫米優格。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Cafe+Duy+Trí+43A+Yên+Phụ+Hanoi",
+    latitude: 21.089,
     longitude: 105.8258,
   },
   {
@@ -462,10 +494,12 @@ export const restaurants: Restaurant[] = [
     address: "1 P. Bát Đàn, Hàng Gai, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "傳統甜湯",
-    foodDescription: "百年歷史的傳統甜湯老店，提供綜合甜湯、黑豆糯米甜湯等，是河內老城區的甜點地標。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Xôi+chè+Bà+Thìn+1+Bát+Đàn+Hanoi",
-    latitude: 21.0320,
-    longitude: 105.8540,
+    foodDescription:
+      "百年歷史的傳統甜湯老店，提供綜合甜湯、黑豆糯米甜湯等，是河內老城區的甜點地標。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Xôi+chè+Bà+Thìn+1+Bát+Đàn+Hanoi",
+    latitude: 21.032,
+    longitude: 105.854,
   },
   {
     id: 28,
@@ -478,10 +512,12 @@ export const restaurants: Restaurant[] = [
     address: "P. Hàng Bè, Hàng Bạc, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "越南豆花",
-    foodDescription: "越南豆花 (Tào Phớ) 與奶酪甜湯 (Chè Khúc Bạch) 專賣店，滑嫩豆花配茉莉糖水，清爽消暑。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Zô+Zô+Tofu+Pudding+Hàng+Bè+Hanoi",
+    foodDescription:
+      "越南豆花 (Tào Phớ) 與奶酪甜湯 (Chè Khúc Bạch) 專賣店，滑嫩豆花配茉莉糖水，清爽消暑。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Zô+Zô+Tofu+Pudding+Hàng+Bè+Hanoi",
     latitude: 21.0325,
-    longitude: 105.8540,
+    longitude: 105.854,
   },
   {
     id: 29,
@@ -494,10 +530,12 @@ export const restaurants: Restaurant[] = [
     address: "35 P. Tràng Tiền, Cửa Nam, Hoàn Kiếm, Hà Nội",
     district: "河內還劍湖",
     food: "傳統冰淇淋",
-    foodDescription: "河內最具代表性的傳統冰淇淋老店，位於還劍湖旁，提供香草甜筒、黑芝麻海藻冰棒等經典口味。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Kem+Tràng+Tiền+35+Trang+Tien+Hanoi",
+    foodDescription:
+      "河內最具代表性的傳統冰淇淋老店，位於還劍湖旁，提供香草甜筒、黑芝麻海藻冰棒等經典口味。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Kem+Tràng+Tiền+35+Trang+Tien+Hanoi",
     latitude: 21.0285,
-    longitude: 105.8490,
+    longitude: 105.849,
   },
   {
     id: 30,
@@ -510,8 +548,10 @@ export const restaurants: Restaurant[] = [
     address: "Ngõ Chợ Đồng Xuân, Hoàn Kiếm, Hà Nội",
     district: "河內老城區",
     food: "綜合甜湯",
-    foodDescription: "位於同春市場巷弄內的甜湯名店，提供綜合甜湯 (Chè Thập Cẩm) 與紫米優格布丁，每日9:00-18:00。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Chè+Yến+Ngõ+Chợ+Đồng+Xuân+Hanoi",
+    foodDescription:
+      "位於同春市場巷弄內的甜湯名店，提供綜合甜湯 (Chè Thập Cẩm) 與紫米優格布丁，每日9:00-18:00。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Chè+Yến+Ngõ+Chợ+Đồng+Xuân+Hanoi",
     latitude: 21.0328,
     longitude: 105.8545,
   },
@@ -526,17 +566,19 @@ export const restaurants: Restaurant[] = [
     address: "55B P. Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
     district: "河內還劍區",
     food: "蛋奶霜配法國麵包",
-    foodDescription: "30年歷史的蛋奶霜專賣店，將打發的蛋奶霜夾入法國麵包 (Kem Trứng Bánh Mì)，是河內經典甜品。",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Kem+Trứng+Bà+Khanh+55B+Hai+Ba+Trung+Hanoi",
+    foodDescription:
+      "30年歷史的蛋奶霜專賣店，將打發的蛋奶霜夾入法國麵包 (Kem Trứng Bánh Mì)，是河內經典甜品。",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Kem+Trứng+Bà+Khanh+55B+Hai+Ba+Trung+Hanoi",
     latitude: 21.0284,
     longitude: 105.8485,
   },
 ];
 
 export const categories = [
-  { id: "all", label: "全部店家", icon: "🍽️" },
-  { id: "fine-dining", label: "高級餐廳", icon: "✨" },
-  { id: "local", label: "在地特色小店", icon: "🏠" },
-  { id: "street-food", label: "街頭小吃", icon: "🛵" },
-  { id: "cafe-dessert", label: "咖啡甜點", icon: "☕" },
+  { id: "all", label: "全部店家" },
+  { id: "fine-dining", label: "高級餐廳" },
+  { id: "local", label: "在地特色小店" },
+  { id: "street-food", label: "街頭小吃" },
+  { id: "cafe-dessert", label: "咖啡甜點" },
 ] as const;
