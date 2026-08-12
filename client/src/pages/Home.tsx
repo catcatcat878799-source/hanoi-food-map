@@ -1,33 +1,79 @@
 import { useState, useMemo, useCallback } from "react";
-import { restaurants, categories, videoId, type Restaurant } from "@/lib/restaurants";
+import {
+  restaurants,
+  categories,
+  videoId,
+  type Restaurant,
+} from "@/lib/restaurants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MapPin, Clock, Search, ExternalLink, Play, ChevronDown, ChevronUp, Utensils, Coffee, Sparkles, Share2 } from "lucide-react";
+import {
+  Award,
+  BarChart3,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Coffee,
+  ExternalLink,
+  House,
+  ListFilter,
+  MapPin,
+  MapPinned,
+  Play,
+  Search,
+  SearchX,
+  Share2,
+  Soup,
+  Sparkles,
+  Utensils,
+} from "lucide-react";
 import { toast } from "sonner";
 
-const categoryIcons: Record<string, typeof Sparkles> = {
+type CategoryId = (typeof categories)[number]["id"];
+
+const categoryIcons: Record<CategoryId, typeof Sparkles> = {
+  all: ListFilter,
   "fine-dining": Sparkles,
-  "local": Utensils,
-  "street-food": Utensils,
+  local: House,
+  "street-food": Soup,
   "cafe-dessert": Coffee,
 };
 
+function getInitialCategory(): CategoryId {
+  if (typeof window === "undefined") return "all";
+
+  const requestedCategory = new URLSearchParams(window.location.search).get(
+    "category"
+  );
+  return categories.some(category => category.id === requestedCategory)
+    ? (requestedCategory as CategoryId)
+    : "all";
+}
+
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCategory, setActiveCategory] =
+    useState<CategoryId>(getInitialCategory);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(12);
 
   const filteredRestaurants = useMemo(() => {
-    return restaurants.filter((r) => {
-      const matchesCategory = activeCategory === "all" || r.category === activeCategory;
-      const matchesSearch = searchQuery === "" || 
-        r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.nameVi.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.food.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.foodDescription.toLowerCase().includes(searchQuery.toLowerCase());
+    return restaurants.filter(r => {
+      const matchesCategory =
+        activeCategory === "all" || r.category === activeCategory;
+      const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+      const matchesSearch =
+        normalizedQuery === "" ||
+        [
+          r.name,
+          r.nameVi,
+          r.food,
+          r.foodDescription,
+          r.address,
+          r.district,
+        ].some(value => value.toLocaleLowerCase().includes(normalizedQuery));
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
@@ -36,53 +82,75 @@ export default function Home() {
 
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: restaurants.length };
-    categories.forEach((cat) => {
+    categories.forEach(cat => {
       if (cat.id !== "all") {
-        counts[cat.id] = restaurants.filter((r) => r.category === cat.id).length;
+        counts[cat.id] = restaurants.filter(r => r.category === cat.id).length;
       }
     });
     return counts;
   }, []);
 
-  const michelinCount = useMemo(() => restaurants.filter((r) => r.michelin).length, []);
+  const michelinCount = useMemo(
+    () => restaurants.filter(r => r.michelin).length,
+    []
+  );
 
-  const handleCardClick = useCallback((id: number) => {
-    setExpandedId(expandedId === id ? null : id);
-  }, [expandedId]);
+  const handleCategoryChange = useCallback((category: CategoryId) => {
+    setActiveCategory(category);
+    setVisibleCount(12);
+    setExpandedId(null);
 
-  const handleShare = (restaurant: Restaurant, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
+    const url = new URL(window.location.href);
+    if (category === "all") {
+      url.searchParams.delete("category");
+    } else {
+      url.searchParams.set("category", category);
+    }
+    window.history.replaceState(
+      null,
+      "",
+      `${url.pathname}${url.search}${url.hash}`
+    );
+  }, []);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+    setVisibleCount(12);
+    setExpandedId(null);
+  }, []);
+
+  const handleCardToggle = useCallback((id: number) => {
+    setExpandedId(currentId => (currentId === id ? null : id));
+  }, []);
+
+  const handleShare = async (restaurant: Restaurant) => {
     const shareUrl = restaurant.mapsUrl;
     const shareText = `${restaurant.name} - ${restaurant.food}`;
-    
+
     if (navigator.share) {
-      navigator.share({
-        title: `河內美食地圖 - ${restaurant.name}`,
-        text: shareText,
-        url: shareUrl,
-      }).catch(() => {
-        // 如果分享失敗，複製到剪貼板
-        copyToClipboard(shareUrl);
-      });
-    } else {
-      // 不支援 Web Share API，複製到剪貼板
-      copyToClipboard(shareUrl);
+      try {
+        await navigator.share({
+          title: `河內美食地圖 - ${restaurant.name}`,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError")
+          return;
+      }
     }
+
+    await copyToClipboard(shareUrl);
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
       toast.success("已複製 Google Maps 連結！");
-    }).catch(() => {
+    } catch {
       toast.error("複製失敗");
-    });
-  };
-
-  const formatTimestamp = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
   };
 
   return (
@@ -92,35 +160,46 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#C0392B] via-[#A93226] to-[#7B241C]" />
         <div
           className="absolute inset-0 opacity-20 bg-cover bg-center"
-          style={{ backgroundImage: "url(/manus-storage/hanoi-hero_2daacb96.jpg)" }}
+          style={{
+            backgroundImage: "url(/manus-storage/hanoi-hero_2daacb96.jpg)",
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#FDF6E3] via-transparent to-transparent" />
-        
-        <div className="relative container py-20 md:py-28">
+
+        <div className="relative container py-14 md:py-28">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
-              <span className="text-sm text-white/90 font-medium">🇻🇳 河內美食探索</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-4 md:mb-6">
+              <MapPinned className="h-4 w-4 text-white/90" aria-hidden="true" />
+              <span className="text-sm text-white/90 font-medium">
+                河內美食探索
+              </span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: "'Noto Serif TC', serif" }}>
+            <h1
+              className="text-3xl md:text-6xl font-bold text-white mb-3 md:mb-4 leading-tight"
+              style={{ fontFamily: "'Noto Serif TC', serif" }}
+            >
               河內美食地圖
             </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-8 leading-relaxed max-w-2xl">
-              33 間河內必吃店家完整指南 · 對應 YouTube 影片片段 · Google Maps 地圖連結
+            <p className="text-base md:text-xl text-white/80 mb-6 md:mb-8 leading-relaxed max-w-2xl">
+              {restaurants.length} 間河內必吃店家完整指南 · 對應 YouTube
+              影片片段 · Google Maps 導航
             </p>
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2 text-white/90">
+            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-4">
+              <div className="flex flex-col items-center gap-2 text-center text-white/90 sm:flex-row sm:text-left">
                 <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-xl font-bold">{restaurants.length}</span>
+                  <span className="text-xl font-bold">
+                    {restaurants.length}
+                  </span>
                 </div>
                 <span className="text-sm">間店家</span>
               </div>
-              <div className="flex items-center gap-2 text-white/90">
+              <div className="flex flex-col items-center gap-2 text-center text-white/90 sm:flex-row sm:text-left">
                 <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <span className="text-sm">{michelinCount} 間米其林</span>
               </div>
-              <div className="flex items-center gap-2 text-white/90">
+              <div className="flex flex-col items-center gap-2 text-center text-white/90 sm:flex-row sm:text-left">
                 <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
                   <span className="text-xl font-bold">4</span>
                 </div>
@@ -132,20 +211,24 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <div className="container py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="container py-8 md:py-12">
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
           {/* Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
-            <div className="sticky top-6 space-y-6">
+            <div className="space-y-4 lg:sticky lg:top-6 lg:space-y-6">
               {/* Search */}
               <div>
                 <div className="relative">
+                  <label htmlFor="restaurant-search" className="sr-only">
+                    搜尋店家、食物或地址
+                  </label>
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    type="text"
-                    placeholder="搜尋店家或食物..."
+                    id="restaurant-search"
+                    type="search"
+                    placeholder="搜尋店家、食物或地址..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => handleSearchChange(e.target.value)}
                     className="pl-10 bg-white border-[#E8D5B0]"
                   />
                 </div>
@@ -153,36 +236,50 @@ export default function Home() {
 
               {/* Category Filter */}
               <div>
-                <h3 className="text-sm font-semibold text-[#5D4E37] mb-3 px-2">分類篩選</h3>
-                <div className="space-y-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                        activeCategory === cat.id
-                          ? "bg-[#C0392B] text-white shadow-md"
-                          : "text-[#5D4E37] hover:bg-[#F5E6CC]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-base">{cat.icon}</span>
-                        {cat.label}
-                      </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        activeCategory === cat.id ? "bg-white/20" : "bg-[#E8D5B0]"
-                      }`}>
-                        {categoryCounts[cat.id] || 0}
-                      </span>
-                    </button>
-                  ))}
+                <h3 className="text-sm font-semibold text-[#5D4E37] mb-3 px-2">
+                  分類篩選
+                </h3>
+                <div className="category-scroller flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
+                  {categories.map(cat => {
+                    const CategoryIcon = categoryIcons[cat.id];
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        aria-pressed={activeCategory === cat.id}
+                        onClick={() => handleCategoryChange(cat.id)}
+                        className={`flex w-auto flex-shrink-0 items-center justify-between gap-3 whitespace-nowrap px-3 py-2.5 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C0392B] focus-visible:ring-offset-2 lg:w-full ${
+                          activeCategory === cat.id
+                            ? "bg-[#C0392B] text-white shadow-md"
+                            : "text-[#5D4E37] hover:bg-[#F5E6CC]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <CategoryIcon
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                          />
+                          {cat.label}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            activeCategory === cat.id
+                              ? "bg-white/20"
+                              : "bg-[#E8D5B0]"
+                          }`}
+                        >
+                          {categoryCounts[cat.id] || 0}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Stats Card */}
-              <div className="rounded-xl bg-gradient-to-br from-[#1B4332] to-[#0F2A1F] p-5 text-white">
+              <div className="hidden rounded-xl bg-gradient-to-br from-[#1B4332] to-[#0F2A1F] p-5 text-white lg:block">
                 <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <span className="text-base">📊</span> 統計總覽
+                  <BarChart3 className="h-4 w-4" aria-hidden="true" /> 統計總覽
                 </h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -195,7 +292,9 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/70">高級餐廳</span>
-                    <span className="font-bold">{categoryCounts["fine-dining"]}</span>
+                    <span className="font-bold">
+                      {categoryCounts["fine-dining"]}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/70">在地小店</span>
@@ -203,11 +302,15 @@ export default function Home() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/70">街頭小吃</span>
-                    <span className="font-bold">{categoryCounts["street-food"]}</span>
+                    <span className="font-bold">
+                      {categoryCounts["street-food"]}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/70">咖啡甜點</span>
-                    <span className="font-bold">{categoryCounts["cafe-dessert"]}</span>
+                    <span className="font-bold">
+                      {categoryCounts["cafe-dessert"]}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -217,7 +320,7 @@ export default function Home() {
                 href={`https://youtu.be/${videoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-xl bg-[#F5E6CC] p-4 hover:bg-[#E8D5B0] transition-colors group"
+                className="hidden rounded-xl bg-[#F5E6CC] p-4 hover:bg-[#E8D5B0] transition-colors group lg:block"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#C0392B] flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -225,7 +328,9 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-xs text-[#5D4E37]">原始影片</div>
-                    <div className="text-sm font-semibold text-[#1B4332]">YouTube 來源</div>
+                    <div className="text-sm font-semibold text-[#1B4332]">
+                      YouTube 來源
+                    </div>
                   </div>
                 </div>
               </a>
@@ -235,26 +340,34 @@ export default function Home() {
           {/* Main Content Area */}
           <div className="flex-1 min-w-0">
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-[#5D4E37]">
-                共 <span className="font-bold text-[#1B4332]">{filteredRestaurants.length}</span> 間店家
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <p
+                className="text-sm text-[#5D4E37]"
+                role="status"
+                aria-live="polite"
+              >
+                共{" "}
+                <span className="font-bold text-[#1B4332]">
+                  {filteredRestaurants.length}
+                </span>{" "}
+                間店家
                 {activeCategory !== "all" && (
                   <span className="ml-1">
-                    · {categories.find((c) => c.id === activeCategory)?.label}
+                    · {categories.find(c => c.id === activeCategory)?.label}
                   </span>
                 )}
               </p>
             </div>
 
             {/* Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 items-start md:grid-cols-2 gap-4">
               {visibleRestaurants.map((restaurant, index) => (
                 <RestaurantCard
                   key={restaurant.id}
                   restaurant={restaurant}
                   isExpanded={expandedId === restaurant.id}
-                  onClick={() => handleCardClick(restaurant.id)}
-                  onShare={(e) => handleShare(restaurant, e)}
+                  onToggle={() => handleCardToggle(restaurant.id)}
+                  onShare={() => void handleShare(restaurant)}
                   index={index}
                 />
               ))}
@@ -264,11 +377,12 @@ export default function Home() {
             {visibleCount < filteredRestaurants.length && (
               <div className="flex justify-center mt-8">
                 <Button
-                  onClick={() => setVisibleCount((c) => c + 12)}
+                  onClick={() => setVisibleCount(c => c + 12)}
                   variant="outline"
                   className="border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
                 >
-                  載入更多 ({filteredRestaurants.length - visibleCount} 間)
+                  再顯示{" "}
+                  {Math.min(12, filteredRestaurants.length - visibleCount)} 間
                 </Button>
               </div>
             )}
@@ -276,9 +390,14 @@ export default function Home() {
             {/* Empty State */}
             {filteredRestaurants.length === 0 && (
               <div className="text-center py-20">
-                <div className="text-6xl mb-4">🔍</div>
+                <SearchX
+                  className="mx-auto mb-4 h-14 w-14 text-[#C0392B]"
+                  aria-hidden="true"
+                />
                 <p className="text-lg text-[#5D4E37]">找不到符合條件的店家</p>
-                <p className="text-sm text-[#8B7355] mt-2">請嘗試其他搜尋關鍵字或分類</p>
+                <p className="text-sm text-[#8B7355] mt-2">
+                  請嘗試其他搜尋關鍵字或分類
+                </p>
               </div>
             )}
           </div>
@@ -289,7 +408,8 @@ export default function Home() {
       <footer className="bg-[#1B4332] text-white/70 py-8 mt-12">
         <div className="container text-center">
           <p className="text-sm">
-            河內美食地圖 · 基於 YouTube 影片分析建構 · {restaurants.length} 間店家完整指南
+            河內美食地圖 · 基於 YouTube 影片分析建構 · {restaurants.length}{" "}
+            間店家完整指南
           </p>
           <p className="text-xs mt-2 text-white/40">
             資料來源：YouTube 影片分析與 Google Maps 搜尋結果
@@ -317,22 +437,24 @@ export default function Home() {
 function RestaurantCard({
   restaurant,
   isExpanded,
-  onClick,
+  onToggle,
   onShare,
   index,
 }: {
   restaurant: Restaurant;
   isExpanded: boolean;
-  onClick: () => void;
-  onShare: (e: React.MouseEvent) => void;
+  onToggle: () => void;
+  onShare: () => void;
   index: number;
 }) {
   const Icon = categoryIcons[restaurant.category] || Sparkles;
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?start=${restaurant.timestampSeconds}&end=${restaurant.timestampSeconds + 45}&autoplay=1`;
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?start=${restaurant.timestampSeconds}&end=${restaurant.timestampSeconds + 45}&autoplay=1&rel=0`;
+  const videoPanelId = `restaurant-video-${restaurant.id}`;
 
   return (
     <Card
-      className={`group cursor-pointer transition-all duration-300 border-2 ${
+      className={`group self-start transition-all duration-300 border-2 ${
         isExpanded
           ? "border-[#C0392B] shadow-xl ring-2 ring-[#C0392B]/20"
           : "border-transparent hover:border-[#E8D5B0] hover:shadow-lg"
@@ -340,14 +462,15 @@ function RestaurantCard({
       style={{
         animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`,
       }}
-      onClick={onClick}
     >
       {/* Restaurant Photo */}
-      {restaurant.photoUrl && (
+      {restaurant.photoUrl && !photoFailed && (
         <div className="relative w-full h-40 overflow-hidden bg-gray-200">
           <img
             src={restaurant.photoUrl}
             alt={restaurant.name}
+            loading="lazy"
+            onError={() => setPhotoFailed(true)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -364,28 +487,33 @@ function RestaurantCard({
                   restaurant.category === "fine-dining"
                     ? "border-[#C0392B] text-[#C0392B] bg-[#FDF2F0]"
                     : restaurant.category === "local"
-                    ? "border-[#1B4332] text-[#1B4332] bg-[#F0F5F2]"
-                    : restaurant.category === "street-food"
-                    ? "border-[#E67E22] text-[#E67E22] bg-[#FDF5EC]"
-                    : "border-[#8E44AD] text-[#8E44AD] bg-[#F8F0FB]"
+                      ? "border-[#1B4332] text-[#1B4332] bg-[#F0F5F2]"
+                      : restaurant.category === "street-food"
+                        ? "border-[#E67E22] text-[#E67E22] bg-[#FDF5EC]"
+                        : "border-[#8E44AD] text-[#8E44AD] bg-[#F8F0FB]"
                 }`}
               >
                 {restaurant.categoryLabel}
               </Badge>
               {restaurant.michelin && (
                 <Badge className="text-xs px-2 py-0.5 bg-[#C0392B] text-white border-0">
-                  ⭐ {restaurant.michelin}
+                  <Award className="mr-1 h-3 w-3" aria-hidden="true" />
+                  {restaurant.michelin}
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-2 mb-1">
-              <CardTitle className="text-lg font-bold text-[#1B4332] leading-snug" style={{ fontFamily: "'Noto Serif TC', serif" }}>
+              <CardTitle
+                className="text-lg font-bold text-[#1B4332] leading-snug"
+                style={{ fontFamily: "'Noto Serif TC', serif" }}
+              >
                 {restaurant.name}
               </CardTitle>
               <button
+                type="button"
                 onClick={onShare}
                 className="flex-shrink-0 p-1.5 text-[#8B7355] hover:text-[#C0392B] hover:bg-[#F5E6CC] rounded-md transition-all duration-200"
-                title="分享店家"
+                aria-label={`分享 ${restaurant.name}`}
               >
                 <Share2 className="w-4 h-4" />
               </button>
@@ -411,15 +539,28 @@ function RestaurantCard({
             <span className="leading-relaxed">{restaurant.address}</span>
           </div>
           <div className="flex items-start gap-2 text-sm">
-            <span className="text-base flex-shrink-0">🍴</span>
+            <Utensils
+              className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#C0392B]"
+              aria-hidden="true"
+            />
             <div>
-              <span className="font-semibold text-[#1B4332]">{restaurant.food}</span>
-              <p className="text-xs text-[#8B7355] mt-1 leading-relaxed">{restaurant.foodDescription}</p>
+              <span className="font-semibold text-[#1B4332]">
+                {restaurant.food}
+              </span>
+              <p className="text-xs text-[#8B7355] mt-1 leading-relaxed">
+                {restaurant.foodDescription}
+              </p>
             </div>
           </div>
 
           {/* Expand/Collapse indicator */}
-          <div className="flex items-center justify-between pt-2 border-t border-[#F5E6CC]">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={isExpanded}
+            aria-controls={videoPanelId}
+            className="flex w-full items-center justify-between rounded-md border-t border-[#F5E6CC] px-1 pt-2 text-left transition-colors hover:text-[#C0392B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C0392B] focus-visible:ring-offset-2"
+          >
             <span className="text-xs text-[#8B7355]">
               {isExpanded ? "收起影片" : "點擊查看影片片段"}
             </span>
@@ -428,17 +569,23 @@ function RestaurantCard({
             ) : (
               <ChevronDown className="w-4 h-4 text-[#C0392B]" />
             )}
-          </div>
+          </button>
 
           {/* Expanded Content - Video Embed */}
           {isExpanded && (
-            <div className="pt-3 space-y-3" style={{ animation: "fadeInUp 0.3s ease-out" }}>
+            <div
+              id={videoPanelId}
+              className="pt-3 space-y-3"
+              style={{ animation: "fadeInUp 0.3s ease-out" }}
+            >
               <div className="relative aspect-video rounded-lg overflow-hidden bg-black shadow-md">
                 <iframe
                   src={embedUrl}
                   title={`${restaurant.name} 影片片段`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   className="absolute inset-0 w-full h-full"
                 />
               </div>
@@ -448,7 +595,6 @@ function RestaurantCard({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#1B4332] text-white text-sm font-medium hover:bg-[#0F2A1F] transition-colors"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <MapPin className="w-4 h-4" />
                   Google Maps
@@ -458,7 +604,6 @@ function RestaurantCard({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#C0392B] text-white text-sm font-medium hover:bg-[#A93226] transition-colors"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink className="w-4 h-4" />
                   YouTube 原片
@@ -474,10 +619,8 @@ function RestaurantCard({
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs text-[#1B4332] hover:text-[#C0392B] transition-colors font-medium"
-              onClick={(e) => e.stopPropagation()}
             >
-              <MapPin className="w-3.5 h-3.5" />
-              在 Google Maps 中查看
+              <MapPin className="w-3.5 h-3.5" />在 Google Maps 中查看
             </a>
           )}
         </div>
